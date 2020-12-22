@@ -44,7 +44,7 @@ reducedSet <- fullSet[ ,meanStdColumns]
 names(activity_labels) <- c("activityNumber", "activityName")
 reducedSet$V1.1 <- activity_labels$activityName[reducedSet$V1.1]
 
-# Use a series of substitutions to rename varibles
+# Use a series of substitutions to rename variables
 reducedNames <- allNames[meanStdColumns]    # Names after subsetting
 reducedNames <- gsub("mean", "Mean", reducedNames)
 reducedNames <- gsub("std", "Std", reducedNames)
@@ -55,9 +55,10 @@ reducedNames <- gsub("^f", "frequency", reducedNames)
 reducedNames <- gsub("^anglet", "angleTime", reducedNames)
 names(reducedSet) <- reducedNames   # Apply new names to data frame
 
-tidyDataset <- reducedSet %>% group_by(activity, subject) %>%
-    summarise_all(mean)
-# summairse_all(list(~mean))
+tidyDataset <- reducedSet %>%
+    group_by(activity, subject) %>%
+    summarise(across(3:(ncol(reducedSet)-2), mean))
+
 # Wtite tidy data to output file
 write.table(tidyDataset, file = "tidyDataset.txt", row.names = FALSE)
 
